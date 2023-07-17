@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "c2d45c3f-aad2-4018-95d2-687477761884": {
+      "ProjectGuid": "c2d45c3f-aad2-4018-95d2-687477761884",
+      "DisplayName": "ServiceBusQueue",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

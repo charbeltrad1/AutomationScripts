@@ -1,0 +1,29 @@
+set top:3:courses "AZ-104,AZ-305,AZ-204"
+
+get top:3:courses
+
+set top:course:rating 4.9
+
+get top:course:rating
+
+set top:course:rating 4.8
+
+get top:course:rating
+
+exists top:course:rating
+
+del top:course:rating
+
+exists top:course:rating
+
+del top:3:courses
+
+lpush top:3:courses "AZ-104"
+
+lpush top:3:courses "AZ-305"
+
+lpush top:3:courses "AZ-204"
+
+lrange top:3:courses 0 -1
+
+exists top:3:courses

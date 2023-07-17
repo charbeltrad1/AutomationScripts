@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "threshold": {
+        "type": "int",
+        "defaultValue": 70,
+        "metadata": {
+          "description": "Threshold value for CPU percentage"
+        }
+      },
+      "vmName": {
+        "type": "string",
+        "metadata": {
+          "description": "Name of the virtual machine"
+        }
+      }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+      {
+        "name": "CPUAlert",
+        "type": "Microsoft.Insights/metricAlerts",
+        "location": "global",
+        "apiVersion": "2018-03-01",
+        "properties": {
+          "description": "Alert for when the VM CPU Percentage goes beyond the threshold",
+          "severity": 2,
+          "enabled": true,
+          "scopes": [
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+          ],
+          "evaluationFrequency": "PT5M",
+          "windowSize": "PT5M",
+          "criteria": {
+            "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+            "allOf": [
+              {
+                "name": "1st criterion",
+                "metricName": "Percentage CPU",
+                "dimensions": [],
+                "operator": "GreaterThanOrEqual",
+                "threshold": "[parameters('threshold')]",
+                "timeAggregation": "Average"
+              }
+            ]
+          },
+          "actions": [
+            {
+              "actionGroupId": "[resourceId('Microsoft.Insights/ActionGroups', 'alertgroup')]"
+            }
+          ]
+        }
+      }
+    ],
+    "outputs": {
+      "outputMessage": {
+        "type": "string",
+        "value": "The deployment is complete. Threshold: [parameters('threshold')], VM Name: [parameters('vmName')]"
+      }
+    }
+  }
+  

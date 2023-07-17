@@ -1,0 +1,81 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Azure VM"
+            }
+        },
+        "minFailingPeriodsToAlert": {
+            "type": "int",
+            "defaultValue": 3,
+            "metadata": {
+                "description": "Minimum number of failing periods to trigger the alert"
+            }
+        },
+        "actionGroupName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Action Group"
+            }
+        },
+        "numberOfEvaluationPeriods": {
+            "type": "int",
+            "defaultValue": 4,
+            "metadata": {
+                "description": "Number of evaluation periods"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "DynamicCPUAlert",
+            "type": "Microsoft.Insights/metricAlerts",
+            "location": "global",
+            "apiVersion": "2018-03-01",
+            "properties": {
+                "description": "Dynamic Alert for an Azure VM",
+                "severity": 2,
+                "enabled": true,
+                "scopes": [
+                    "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                ],
+                "evaluationFrequency": "PT5M",
+                "windowSize": "PT5M",
+                "criteria": {
+                    "odata.type": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+                    "allOf": [
+                        {
+                            "criterionType": "DynamicThresholdCriterion",
+                            "name": "1st criterion",
+                            "metricName": "Percentage CPU",
+                            "dimensions": [],
+                            "operator": "GreaterThan",
+                            "timeAggregation": "Average",
+                            "alertSensitivity": "Medium",
+                            "failingPeriods": {
+                                "numberOfEvaluationPeriods": "[parameters('numberOfEvaluationPeriods')]",
+                                "minFailingPeriodsToAlert": "[parameters('minFailingPeriodsToAlert')]"
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "actionGroupId": "[resourceId('Microsoft.Insights/ActionGroups', parameters('actionGroupName'))]"
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "alertResourceId": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Insights/metricAlerts', 'DynamicCPUAlert')]"
+        }
+    }
+}

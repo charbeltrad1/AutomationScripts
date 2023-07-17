@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "numberOfCopies": {
+            "type": "int",
+            "defaultValue": 3,
+            "metadata": {
+                "description": "Number of storage account copies to create"
+            }
+        },
+        "appStoreName": {
+            "type": "string",
+            "defaultValue": "appstore46565634",
+            "metadata": {
+                "description": "Name of the App Store"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[concat(copyIndex(), parameters('appStoreName'))]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-04-01",            
+            "location": "North Europe",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "copy" : { 
+                "name" :"storagecopy",
+                "count" : "[parameters('numberOfCopies')]"
+            }
+        }
+    ]    
+}

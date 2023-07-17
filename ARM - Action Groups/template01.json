@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "emailReceiver": {
+      "type": "string",
+      "defaultValue": "techsup4000@gmail.com",
+      "metadata": {
+        "description": "Email address of the receiver"
+      }
+    }
+  },
+  "functions": [],
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Insights/actionGroups",
+      "apiVersion": "2021-09-01",
+      "name": "alertgroup",
+      "location": "Global",
+      "properties": {
+        "groupShortName": "alertgroup",
+        "enabled": true,
+        "emailReceivers": [
+          {
+            "name": "AdmimEmail",
+            "emailAddress": "[parameters('emailReceiver')]",
+            "useCommonAlertSchema": true
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "emailReceiverOutput": {
+      "type": "string",
+      "value": "[parameters('emailReceiver')]"
+    }
+  }
+}
